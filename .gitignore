@@ -1,0 +1,15 @@
+# Bitcoin address database — arquivo grande demais para o git (2.3GB)
+Bitcoin_addresses_LATEST.txt
+
+# Backup
+*.bak
+*.lnk
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# IDE
+.idea/
+.vscode/
