@@ -37,9 +37,40 @@ Balance = 0? → next attempt
 - Elliptic curve cryptography (secp256k1)
 - Bitcoin public API
 
+## Files
+
+| File | Description |
+|---|---|
+| `rb.py` | Main loop — generates keys, derives addresses, checks against the lookup file |
+| `btcwif.py` | WIF encoding/decoding with checksum validation |
+| `brute.py` | CSV loader used for early address lookup experiments with pandas |
+| `wallet.py` | Wallet utilities |
+| `Bitcoin_addresses_LATEST.txt` | Address lookup file from addresses.loyce.club |
+
+## Running
+
+```bash
+pip install ecdsa base58 pandas numpy
+python rb.py
+```
+
+The loop runs indefinitely. Every 100 attempts the terminal is cleared and the latest
+generated address is printed. If a match is found, the private key, public key, WIF and
+address are written to a file named after the address.
+
+## BSC Contract
+
+The `richbrutality` experiment also has a deployed contract on Binance Smart Chain:
+
+```
+0xa59a4f398be9ee072aa800e489ce74429a4746f5
+```
+
 ## Disclaimer
 
 This project is strictly educational. There is no realistic expectation of finding a funded wallet — the math guarantees that. The goal is to understand how Bitcoin wallets work internally.
+
+---
 
 ## What I learned
 
@@ -71,6 +102,14 @@ Base58 removes visually ambiguous characters (`0`, `O`, `I`, `l`) from standard 
 ### Wallet Import Format (WIF)
 
 Private keys are stored and shared using WIF, which applies a similar pipeline: prepend `0x80` (mainnet prefix), double-SHA-256 for a 4-byte checksum, append checksum, Base58 encode. Implementing `privToWif` and `wifToPriv` (with `wifChecksum`) in `btcwif.py` made the round-trip explicit and testable: a WIF string encodes exactly one private key and the embedded checksum makes invalid strings detectable before any network call.
+
+### Vectorized lookup with NumPy
+
+Checking whether a generated address exists among tens of millions of known addresses is the performance bottleneck of the loop. Loading the address file into a NumPy array (`datanp = data['address'].to_numpy()`) and using `np.any(datanp == address)` is significantly faster than iterating a Python list or using pandas boolean indexing on every attempt, because NumPy executes the comparison as a contiguous C loop over the array rather than dispatching Python object comparisons one by one.
+
+### Parallelism and the GIL
+
+The commented-out `multiprocessing.Pool` block in `rb.py` documents a natural next step: since each key generation attempt is fully independent (no shared mutable state), the loop is embarrassingly parallel. Python's GIL blocks true thread-level parallelism for CPU-bound work, so `multiprocessing` (separate processes, each with its own memory space and Python interpreter) is the correct tool. The tradeoff is memory: each worker process loads its own copy of the NumPy address array, which at ~2 GB for the full LATEST file makes RAM the real constraint before CPU becomes one.
 
 ### The scale of the key space
 
