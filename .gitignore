@@ -1,15 +1,28 @@
-# Bitcoin address database — arquivo grande demais para o git (2.3GB)
+# Bitcoin address database — too large for git (~2.3 GB)
 Bitcoin_addresses_LATEST.txt
 
-# Backup
+# Backup and Windows shortcut files
 *.bak
 *.lnk
 
 # Python
+venv/
+.venv/
 __pycache__/
 *.py[cod]
 *.pyo
+*.egg-info/
+dist/
+build/
+
+# Environment variables
+.env
 
 # IDE
 .idea/
 .vscode/
+
+# OS
+Thumbs.db
+desktop.ini
+.DS_Store
