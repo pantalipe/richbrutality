@@ -58,13 +58,12 @@ The loop runs indefinitely. Every 100 attempts the terminal is cleared and the l
 generated address is printed. If a match is found, the private key, public key, WIF and
 address are written to a file named after the address.
 
-## BSC Contract
+## Related Projects
 
-The `richbrutality` experiment also has a deployed contract on Binance Smart Chain:
+If this project sparked your interest in cryptography and key derivation, you might also like **PandaPoints** — a DeFi token on Binance Smart Chain built by the same author, featuring staking, stablecoin swap, a custom in-browser wallet (no extension required), and a referral system.
 
-```
-0xa59a4f398be9ee072aa800e489ce74429a4746f5
-```
+- Contract: [`0xa59a4f398be9ee072aa800e489ce74429a4746f5`](https://bscscan.com/address/0xa59a4f398be9ee072aa800e489ce74429a4746f5) on BSC
+- Dapp: [pandapointscoin.com](https://pandapointscoin.com)
 
 ## Disclaimer
 
